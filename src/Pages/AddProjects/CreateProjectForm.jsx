@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import axios from "axios";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import useAxios from "../../Hooks/useAxios";
+import { uploadImage } from "../../Api/utils";
+import toast from "react-hot-toast";
 
 const CreateProjectForm = () => {
   const {
@@ -15,32 +16,17 @@ const CreateProjectForm = () => {
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
 
-  console.log("___ Description value >>", value);
-
   const onSubmit = async (data) => {
     setLoading(true);
 
     try {
-      // Upload image to Imgur
-      const formData = new FormData();
-      formData.append("image", data.image[0]);
+      const image1 = data.image[0];
+      const imageUrl = await uploadImage(image1);
 
-      const imgurResponse = await axios.post(
-        "https://api.imgur.com/3/image",
-        formData,
-        {
-          headers: {
-            Authorization: `06fc5ce61bec4ed`, // Replace with your Imgur Client ID
-          },
-        }
-      );
-
-      const imageUrl = imgurResponse.data.data.link;
-
-      // Create API payload
+      // from data API payload
       const payload = {
         projectName: data.projectName,
-        images: [imageUrl, data.additionalImageUrl], // Add additional images if needed
+        images: [imageUrl, data.additionalImageUrl],
         hadiths: {
           firstHadith: data.firstHadith,
           secondHadith: data.secondHadith,
@@ -75,13 +61,14 @@ const CreateProjectForm = () => {
         ],
       };
 
+      console.log("payload__", payload);
+
       // Post data to  server
       const res = await useAxios.post("/api/projects", payload);
-      console.log("post project", res.data);
-      // Reset form and states
+      console.log("post project___>", res.data);
       setLoading(false);
       setImagePreview(null);
-      alert("Project submitted successfully!");
+      toast.success("Project submitted successfully!");
     } catch (error) {
       console.error("Error submitting project:", error);
       setLoading(false);
