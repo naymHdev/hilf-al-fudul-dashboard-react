@@ -66,7 +66,7 @@ const CreateProjectForm = () => {
       // from data API payload
       const payload = {
         projectName: data.projectName,
-        images: [imageUrl, data.additionalImageUrl],
+        images: [imageUrl],
         hadiths: {
           firstHadith: data.firstHadith,
           secondHadith: data.secondHadith,
@@ -76,26 +76,13 @@ const CreateProjectForm = () => {
         projectHighlights: data.projectHighlights.split(","),
         paymentSystem: [
           {
-            method: data.paymentMethod1,
+            method: data.bankPayment1,
             details: {
               bankName: data.bankName,
+              bankPlace: data.bankPlace,
               accountNumber: data.accountNumber,
+              routingName: data.routingName,
               swiftCode: data.swiftCode,
-            },
-          },
-          {
-            method: data.paymentMethod2,
-            details: {
-              provider: data.provider,
-              number: data.number,
-              type: data.paymentType,
-            },
-          },
-          {
-            method: data.paymentMethod3,
-            details: {
-              platform: data.paymentPlatform,
-              link: data.paymentLink,
             },
           },
         ],
@@ -205,7 +192,7 @@ const CreateProjectForm = () => {
         <input
           type="text"
           id="firstHadith"
-          {...register("firstHadith", { required: true })}
+          {...register("firstHadith")}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           placeholder="Enter first hadith"
         />
@@ -223,7 +210,7 @@ const CreateProjectForm = () => {
         <input
           type="text"
           id="secondHadith"
-          {...register("secondHadith", { required: true })}
+          {...register("secondHadith")}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           placeholder="Enter second hadith"
         />
@@ -242,7 +229,7 @@ const CreateProjectForm = () => {
         <input
           type="text"
           id="projectHighlights"
-          {...register("projectHighlights", { required: true })}
+          {...register("projectHighlights")}
           className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           placeholder="Enter highlights (comma-separated)"
         />
@@ -278,15 +265,15 @@ const CreateProjectForm = () => {
       )}
       {/* Payment System 1 */}
       <div className="mb-4">
-        <h3 className="text-lg font-semibold">Payment Method 1</h3>
+        <h3 className="text-lg font-semibold">ব্যাংক অ্যাকাউন্ট</h3>
         <div>
           <input
             type="text"
-            {...register("paymentMethod1")}
-            placeholder="Enter payment method (e.g., Bank Transfer)"
+            {...register("bankPayment1")}
+            placeholder="অ্যাকাউন্টের নাম"
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
-          {errors.paymentMethod1 && (
+          {errors.bankPayment1 && (
             <span className="text-red-500">This field is required</span>
           )}
         </div>
@@ -294,7 +281,15 @@ const CreateProjectForm = () => {
           <input
             type="text"
             {...register("bankName")}
-            placeholder="Bank Name"
+            placeholder="ব্যাংক নাম"
+            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            {...register("bankPlace")}
+            placeholder="শাখা"
             className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
@@ -302,7 +297,15 @@ const CreateProjectForm = () => {
           <input
             type="text"
             {...register("accountNumber")}
-            placeholder="Account Number"
+            placeholder="অ্যাকাউন্ট নম্বর"
+            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+        <div>
+          <input
+            type="text"
+            {...register("routingName")}
+            placeholder="রাউটিং নাম্বার"
             className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
@@ -310,75 +313,12 @@ const CreateProjectForm = () => {
           <input
             type="text"
             {...register("swiftCode")}
-            placeholder="SWIFT Code"
+            placeholder="সুইফট কোড"
             className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
         </div>
       </div>
-      {/* Payment System 2 */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Payment Method 2</h3>
-        <div>
-          <input
-            type="text"
-            {...register("paymentMethod2")}
-            placeholder="Enter payment method (e.g., Mobile Payment)"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            {...register("provider")}
-            placeholder="Provider (e.g., bKash)"
-            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            {...register("number")}
-            placeholder="Number"
-            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            {...register("paymentType")}
-            placeholder="Type (e.g., Personal, Business)"
-            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-      </div>
-      {/* Payment System 3 */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Payment Method 3</h3>
-        <div>
-          <input
-            type="text"
-            {...register("paymentMethod3")}
-            placeholder="Enter payment method (e.g., Online Payment)"
-            className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            {...register("paymentPlatform")}
-            placeholder="Platform (e.g., PayPal)"
-            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-        <div>
-          <input
-            type="text"
-            {...register("paymentLink")}
-            placeholder="Payment Link"
-            className="w-full mt-2 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
-        </div>
-      </div>
+
       {/* Submit Button */}
       <div className="text-center m-10">
         <button
