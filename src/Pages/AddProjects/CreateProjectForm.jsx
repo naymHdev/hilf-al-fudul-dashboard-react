@@ -6,6 +6,37 @@ import useAxios from "../../Hooks/useAxios";
 import { uploadImage } from "../../Api/utils";
 import toast from "react-hot-toast";
 
+// Define a custom toolbar
+const modules = {
+  toolbar: [
+    [{ header: "1" }, { header: "2" }, { font: [] }],
+    [{ list: "ordered" }, { list: "bullet" }],
+    ["bold", "italic", "underline", "strike", "blockquote"],
+    [{ color: [] }, { background: [] }],
+    [{ align: [] }],
+    ["link"],
+    ["clean"],
+  ],
+};
+
+const formats = [
+  "header",
+  "font",
+  "size",
+  "bold",
+  "italic",
+  "underline",
+  "strike",
+  "blockquote",
+  "list",
+  "bullet",
+  "indent",
+  "link",
+  "color",
+  "background",
+  "align",
+];
+
 const CreateProjectForm = () => {
   const {
     register,
@@ -15,6 +46,15 @@ const CreateProjectForm = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [loading, setLoading] = useState(false);
   const [value, setValue] = useState("");
+  const [longDes, setLongDes] = useState("");
+
+  const clearEditorContent = () => {
+    setValue("");
+  };
+
+  const clearLongDesContent = () => {
+    setLongDes("");
+  };
 
   const onSubmit = async (data) => {
     setLoading(true);
@@ -32,7 +72,7 @@ const CreateProjectForm = () => {
           secondHadith: data.secondHadith,
         },
         shortDescription: value,
-        projectDescription: data.projectDescription,
+        projectDescription: longDes,
         projectHighlights: data.projectHighlights.split(","),
         paymentSystem: [
           {
@@ -61,7 +101,7 @@ const CreateProjectForm = () => {
         ],
       };
 
-      console.log("payload__", payload);
+      // console.log("payload__", payload);
 
       // Post data to  server
       const res = await useAxios.post("/api/projects", payload);
@@ -104,6 +144,7 @@ const CreateProjectForm = () => {
           <span className="text-red-500">This field is required</span>
         )}
       </div>
+
       {/* Short Description */}
       <div className="mb-4">
         <label
@@ -112,8 +153,23 @@ const CreateProjectForm = () => {
         >
           Short Description
         </label>
-        <ReactQuill theme="snow" value={value} onChange={setValue} />
+
+        <ReactQuill
+          theme="snow"
+          value={value}
+          onChange={setValue}
+          modules={modules}
+          formats={formats}
+          placeholder="Start typing here..."
+        />
       </div>
+      <button
+        onClick={clearEditorContent}
+        className="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+      >
+        Clear Content
+      </button>
+
       {/* Long Description */}
       <div className="mb-4">
         <label
@@ -122,16 +178,22 @@ const CreateProjectForm = () => {
         >
           Long Description
         </label>
-        <textarea
-          id="projectDescription"
-          {...register("projectDescription", { required: true })}
-          className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
-          placeholder="Enter long description"
+        <ReactQuill
+          theme="snow"
+          value={longDes}
+          onChange={setLongDes}
+          modules={modules}
+          formats={formats}
+          placeholder="Start typing here..."
         />
-        {errors.projectDescription && (
-          <span className="text-red-500">This field is required</span>
-        )}
+        <button
+          onClick={clearLongDesContent}
+          className="mt-4 px-4 py-2 bg-red-500 text-white font-semibold rounded-md shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400"
+        >
+          Clear Content
+        </button>
       </div>
+
       {/* Hadiths */}
       <div className="mb-4">
         <label
@@ -220,7 +282,7 @@ const CreateProjectForm = () => {
         <div>
           <input
             type="text"
-            {...register("paymentMethod1", { required: true })}
+            {...register("paymentMethod1")}
             placeholder="Enter payment method (e.g., Bank Transfer)"
             className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-green-500"
           />
@@ -330,7 +392,10 @@ const CreateProjectForm = () => {
         </button>
       </div>
 
-      <div>{value}</div>
+      <div className="mt-4 p-4 border rounded-lg shadow-inner bg-gray-50">
+        <h3 className="font-semibold text-lg mb-2">Preview:</h3>
+        <div className="prose" dangerouslySetInnerHTML={{ __html: value }} />
+      </div>
     </form>
   );
 };
